@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Libreria y importaciones
 
 import shodan
 from collections import defaultdict
@@ -12,8 +11,9 @@ CURSO = "Seguridad Informática"
 SECCION = "B"
 
 # === CONFIGURACIÓN DE SHODAN ===
-API_KEY = "TU_API_KEY_AQUI"  # Reemplaza con tu clave de Shodan
-QUERY = 'country:"GT"'       # Filtra dispositivos en Guatemala
+API_KEY = "ptaqSMfmFM4KbUaXPrEsOTIC97wSyCqq"  # Tu clave gratuita
+QUERY = 'country:"GT" port:80'  # Filtro para cuentas gratuitas
+LIMIT_RESULTS = 5               # Limitar resultados para evitar 403
 
 def main():
     # Crear instancia de la API de Shodan
@@ -21,25 +21,22 @@ def main():
 
     try:
         print(f"Ejecutando búsqueda: {QUERY}")
-        # Realizar la búsqueda en Shodan
-        results = api.search(QUERY)
+        # Realizar la búsqueda con límite de resultados
+        results = api.search(QUERY, limit=LIMIT_RESULTS)
 
         # Conjuntos y diccionarios para almacenar información
-        total_ips = set()             # Guarda IPs únicas encontradas
-        puertos = defaultdict(int)    # Contador de IPs por puerto
+        total_ips = set()          # Guarda IPs únicas encontradas
+        puertos = defaultdict(int) # Contador de IPs por puerto
 
-      print("\n=== RESULTADOS ENCONTRADOS ===\n")
+        print("\n=== RESULTADOS ENCONTRADOS ===\n")
         for match in results['matches']:
-            # Obtener IP, puerto y tipo de transporte
             ip = match.get('ip_str')
             port = match.get('port', 'N/A')
             service = match.get('transport', 'Desconocido')
 
-            # Guardar información para el resumen
             total_ips.add(ip)
             puertos[port] += 1
 
-            # Mostrar cada resultado en consola
             print(f"IP: {ip} | Puerto: {port} | Servicio: {service}")
 
         # === RESUMEN DE RESULTADOS ===
@@ -56,7 +53,6 @@ def main():
         print(f"Sección: {SECCION}")
 
     except shodan.APIError as e:
-        # Captura errores de la API de Shodan
         print(f"Error en la consulta: {e}")
 
 if __name__ == "__main__":
