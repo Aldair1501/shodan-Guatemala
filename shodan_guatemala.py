@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Libreria y importaciones
 
 import shodan
 from collections import defaultdict
